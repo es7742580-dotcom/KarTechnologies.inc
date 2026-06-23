@@ -19,7 +19,7 @@ const db = {
         partImg: "ТУТ_ССЫЛКА_НА_ПРОЗРАЧНЫЙ_КОРПУС_КАНОНЕРКИ.png", 
         unlocked: false 
     },
-"уникальный_id": { 
+"hull_2": { 
     id: "hull_2", 
     name: "Паровой фрегат", 
     branch: "hulls", // hulls, guns, sec или armor
