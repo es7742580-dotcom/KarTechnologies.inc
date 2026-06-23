@@ -9,7 +9,7 @@ const db = {
     
     // ВЕТКА 1: КОРПУСА
     "hull_1": { id: "hull_1", name: "Канонерская лодка", branch: "hulls", type: "hull", parentId: "root_steam", cost: 100,
-        desc: "Малый корабль для береговой обороны. Дешевый, но слабый.", stats: "Лимит веса: 800 т", img: "https://via.placeholder.com/300x150/1c1c1e/fff?text=Gunboat", unlocked: false },
+        desc: "Малый корабль для береговой обороны. Дешевый, но слабый.", stats: "Лимит веса: 800 т", img: "https://ru.wikipedia.org/wiki/%D0%A4%D0%B0%D0%B9%D0%BB:Khrabryy1895.jpg", unlocked: false },
     "hull_2": { id: "hull_2", name: "Корвет", branch: "hulls", type: "hull", parentId: "hull_1", cost: 250,
         desc: "Быстрый океанский корабль. Идеален для разведки.", stats: "Лимит веса: 2500 т", img: "https://via.placeholder.com/300x150/1c1c1e/fff?text=Corvette", unlocked: false },
 
