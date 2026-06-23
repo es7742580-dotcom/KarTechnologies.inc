@@ -1,86 +1,74 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Адмиралтейство: Древо Науки</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; background: #1c1c1e; color: white; margin: 0; padding: 15px; overflow-x: hidden; }
-        .nav-tabs { display: flex; justify-content: space-around; margin-bottom: 20px; background: #2c2c2e; border-radius: 10px; padding: 5px; }
-        .tab-btn { background: none; border: none; color: #8e8e93; padding: 10px; font-weight: bold; cursor: pointer; width: 50%; border-radius: 8px; }
-        .tab-btn.active { background: #007aff; color: white; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        
-        /* Древо исследований */
-        .tree-container { display: flex; flex-direction: column; align-items: center; width: 100%; }
-        .root-node { margin-bottom: 30px; }
-        .branches-container { display: flex; justify-content: space-between; width: 100%; overflow-x: auto; gap: 15px; padding-bottom: 20px; }
-        .branch { display: flex; flex-direction: column; gap: 20px; min-width: 120px; text-align: center; }
-        .branch-title { font-size: 12px; color: #8e8e93; text-transform: uppercase; margin-bottom: 10px; }
-        
-        /* Кнопки технологий */
-        .tech-node { background: #2c2c2e; padding: 15px 5px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; font-size: 13px; font-weight: bold; }
-        .tech-node.locked { opacity: 0.5; filter: grayscale(1); border-color: #48484a; }
-        .tech-node.available { border-color: #ff9f0a; box-shadow: 0 0 10px rgba(255, 159, 10, 0.3); } /* Желтый - можно изучить */
-        .tech-node.unlocked { border-color: #34c759; background: rgba(52, 199, 89, 0.1); } /* Зеленый - изучено */
+<!-- ДОБАВЬ ЭТО В ТЕГ <head> ВНУТРЬ <style> -->
+<style>
+    /* ... твои старые стили ... */
 
-        /* Модальное окно (всплывающее) */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: #2c2c2e; width: 90%; max-width: 350px; border-radius: 15px; padding: 20px; box-sizing: border-box; position: relative; text-align: center; }
-        .modal-img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; background: #1c1c1e; }
-        .modal-close { position: absolute; top: 10px; right: 15px; font-size: 24px; color: #8e8e93; cursor: pointer; background: none; border: none; }
-        .modal-title { margin: 0 0 10px 0; font-size: 18px; color: #fff; }
-        .modal-desc { font-size: 13px; color: #aeaea3; margin-bottom: 15px; text-align: left; }
-        .modal-stats { background: #1c1c1e; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 15px; text-align: left; }
-        .btn-buy { background: #007aff; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        .btn-buy:disabled { background: #48484a; color: #8e8e93; cursor: not-allowed; }
-        
-        /* Конструктор */
-        label { display: block; margin-top: 12px; color: #aeaea3; font-size: 14px; }
-        select, input { width: 100%; padding: 12px; margin: 6px 0; border-radius: 8px; border: none; box-sizing: border-box; background: #2c2c2e; color: white; }
-    </style>
-</head>
-<body>
+    /* Стили для визуального чертежа */
+    #blueprint-container {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        background: #0d1b2a;
+        border: 2px solid #415a77;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        overflow: hidden;
+    }
 
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('research')">🔬 Древо Науки</button>
-        <button class="tab-btn" onclick="switchTab('constructor')">⚓ Верфь</button>
+    /* Сетка для фона (создает эффект чертежа) */
+    .blueprint-bg {
+        position: absolute;
+        width: 100%; height: 100%;
+        background-image: 
+            linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+        z-index: 0;
+    }
+
+    /* Настройки для всех слоев */
+    .layer-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        z-index: 1;
+        pointer-events: none;
+        display: none; /* Скрыты по умолчанию */
+    }
+</style>
+
+<!-- ЗАМЕНИ ТВОЮ ВКЛАДКУ КОНСТРУКТОРА НА ЭТУ -->
+<div id="constructor-tab" class="tab-content">
+    <h2>Верфь (Сборка корабля)</h2>
+    
+    <!-- Окно чертежа -->
+    <div id="blueprint-container">
+        <div class="blueprint-bg"></div>
+        <img id="layer-hull" class="layer-img" src="" alt="Корпус">
+        <img id="layer-main" class="layer-img" src="" alt="Гл. Калибр">
+        <img id="layer-sec" class="layer-img" src="" alt="Вспом. Оружие">
+        <img id="layer-armor" class="layer-img" src="" alt="Броня">
     </div>
 
-    <div id="research-tab" class="tab-content active">
-        <div class="tree-container">
-            <div class="root-node" id="tree-root"></div>
-            <div class="branches-container" id="tree-branches">
-                <div class="branch" id="branch-hulls"><div class="branch-title">Корпуса</div></div>
-                <div class="branch" id="branch-guns"><div class="branch-title">Гл. Калибр</div></div>
-                <div class="branch" id="branch-sec"><div class="branch-title">Вспом. Орудия</div></div>
-                <div class="branch" id="branch-armor"><div class="branch-title">Броня & ДВС</div></div>
-            </div>
-        </div>
+    <!-- Обрати внимание на добавленный onchange="updateBlueprint()" -->
+    <div class="form-group">
+        <label>Корпус:</label>
+        <select id="cb-hull" onchange="updateBlueprint()"><option value="0">Выберите корпус...</option></select>
     </div>
-
-    <div id="constructor-tab" class="tab-content">
-        <h3>Сборка корабля</h3>
-        <label>Корпус:</label><select id="cb-hull"><option value="0">Выберите корпус...</option></select>
-        <label>Главный калибр:</label><select id="cb-main"><option value="0">Выберите ГК...</option></select>
-        <label>Вспомогательный калибр:</label><select id="cb-sec"><option value="0">Выберите ПМК...</option></select>
-        <label>Броня & ДВС:</label><select id="cb-armor"><option value="0">Выберите оснащение...</option></select>
-        <button class="btn-buy" style="margin-top: 20px;">Отправить чертеж</button>
+    <div class="form-group">
+        <label>Главный калибр:</label>
+        <select id="cb-main" onchange="updateBlueprint()"><option value="0">Выберите ГК...</option></select>
     </div>
-
-    <div class="modal-overlay" id="tech-modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">×</button>
-            <img src="" class="modal-img" id="m-img" alt="Tech">
-            <h2 class="modal-title" id="m-title">Название</h2>
-            <div class="modal-desc" id="m-desc">Описание технологии...</div>
-            <div class="modal-stats" id="m-stats">Урон: 10<br>Вес: 5т</div>
-            <button class="btn-buy" id="m-buy-btn" onclick="buyCurrentTech()">Изучить (100 Очков)</button>
-        </div>
+    <div class="form-group">
+        <label>Вспом. орудия:</label>
+        <select id="cb-sec" onchange="updateBlueprint()"><option value="0">Выберите ПМК...</option></select>
     </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+    <div class="form-group">
+        <label>Бронирование:</label>
+        <select id="cb-armor" onchange="updateBlueprint()"><option value="0">Выберите броню...</option></select>
+    </div>
+    
+    <button class="btn" style="width: 100%; margin-top: 15px;">Построить корабль</button>
+</div>
