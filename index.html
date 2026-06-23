@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конструктор ВПИ</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #1c1c1e; color: white; padding: 20px; }
+        select, input, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; }
+        button { background: #007aff; color: white; font-weight: bold; cursor: pointer; }
+        .status { padding: 10px; border-radius: 5px; text-align: center; font-weight: bold; }
+        .success { background: #248a3d; } .error { background: #b02a2a; }
+    </style>
+</head>
+<body>
+    <h2>📐 Конструктор Чертежей</h2>
+    
+    <label>Название техники:</label>
+    <input type="text" id="tech-name" placeholder="Например: Танк Кромсатель">
+
+    <label>Главный калибр (Вес):</label>
+    <select id="main-gun" onchange="calculateWeight()">
+        <option value="5" data-dmg="90">57-мм ПТ-пушка (5 т)</option>
+        <option value="8" data-dmg="15">122-мм Гаубица (8 т)</option>
+    </select>
+
+    <label>Вспомогательное орудие:</label>
+    <select id="sec-gun" onchange="calculateWeight()">
+        <option value="0.5">Пулемет Максима (0.5 т)</option>
+        <option value="1.5">20-мм Автопушка (1.5 т)</option>
+    </select>
+
+    <label>Двигатель (Лимит тяги):</label>
+    <select id="engine" onchange="calculateWeight()">
+        <option value="10">Ранний ДВС (Лимит: 10 т)</option>
+        <option value="15">Дизель В-2 (Лимит: 15 т)</option>
+    </select>
+
+    <div id="weight-status" class="status success">Вес: 5.5 т / 10 т (В норме)</div>
+    
+    <button id="send-btn" onclick="sendData()">Отправить в Генштаб</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
