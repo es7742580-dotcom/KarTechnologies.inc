@@ -1,3 +1,4 @@
+alert("СКРИПТ ОБНОВИЛСЯ! СЛЕДУЮЩАЯ ВЕРСИЯ");
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 if (tg) tg.expand();
 
