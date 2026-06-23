@@ -15,7 +15,7 @@ const db = {
     "hull_1": { 
         id: "hull_1", name: "Канонерская лодка", branch: "hulls", type: "hull", parentId: "root_steam", cost: 100,
         desc: "Малый корабль для береговой обороны.", stats: "Лимит веса: 800 т", 
-        img: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Khrabryy1895.jpg", 
+        img: "https://war-book.ru/wp-content/uploads/2019/05/00036166.jpg", 
         partImg: "ТУТ_ССЫЛКА_НА_ПРОЗРАЧНЫЙ_КОРПУС_КАНОНЕРКИ.png", 
         unlocked: false 
     },
