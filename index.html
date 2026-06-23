@@ -3,43 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Конструктор ВПИ</title>
+    <title>Морское Адмиралтейство ВПИ</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background: #1c1c1e; color: white; padding: 20px; }
-        select, input, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; }
-        button { background: #007aff; color: white; font-weight: bold; cursor: pointer; }
-        .status { padding: 10px; border-radius: 5px; text-align: center; font-weight: bold; }
+        body { font-family: Arial, sans-serif; background: #1c1c1e; color: white; padding: 15px; margin: 0; }
+        .nav-tabs { display: flex; justify-content: space-around; margin-bottom: 20px; background: #2c2c2e; border-radius: 10px; padding: 5px; }
+        .tab-btn { background: none; border: none; color: #8e8e93; padding: 10px 20px; font-weight: bold; cursor: pointer; width: 50%; border-radius: 8px; }
+        .tab-btn.active { background: #007aff; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Стили конструктора */
+        label { display: block; margin-top: 12px; color: #aeaea3; font-size: 14px; }
+        select, input, button { width: 100%; padding: 12px; margin: 6px 0 12px 0; border-radius: 8px; border: none; box-sizing: border-box; }
+        select { background: #2c2c2e; color: white; }
+        input { background: #2c2c2e; color: white; }
+        .btn-main { background: #007aff; color: white; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .status { padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: 10px; }
         .success { background: #248a3d; } .error { background: #b02a2a; }
+
+        /* Стили исследований */
+        .tech-card { background: #2c2c2e; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .tech-info h4 { margin: 0 0 5px 0; }
+        .tech-info p { margin: 0; font-size: 12px; color: #8e8e93; }
+        .btn-research { background: #34c759; color: white; width: auto; padding: 8px 15px; margin: 0; font-size: 14px; border-radius: 6px; }
+        .btn-research.locked { background: #48484a; color: #8e8e93; cursor: not-allowed; }
+        .btn-research.opened { background: rgba(52, 199, 89, 0.2); color: #34c759; cursor: default; }
     </style>
 </head>
 <body>
-    <h2>📐 Конструктор Чертежей</h2>
-    
-    <label>Название техники:</label>
-    <input type="text" id="tech-name" placeholder="Например: Танк Кромсатель">
 
-    <label>Главный калибр (Вес):</label>
-    <select id="main-gun" onchange="calculateWeight()">
-        <option value="5" data-dmg="90">57-мм ПТ-пушка (5 т)</option>
-        <option value="8" data-dmg="15">122-мм Гаубица (8 т)</option>
-    </select>
+    <!-- Навигация по вкладкам -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('research')">🔬 Исследования</button>
+        <button class="tab-btn" onclick="switchTab('constructor')">⚓ Конструктор КБ</button>
+    </div>
 
-    <label>Вспомогательное орудие:</label>
-    <select id="sec-gun" onchange="calculateWeight()">
-        <option value="0.5">Пулемет Максима (0.5 т)</option>
-        <option value="1.5">20-мм Автопушка (1.5 т)</option>
-    </select>
+    <!-- ВКЛАДКА 1: ИССЛЕДОВАНИЯ -->
+    <div id="research-tab" class="tab-content active">
+        <h3>Викторианская эпоха (Наука)</h3>
+        
+        <div class="tech-card">
+            <div class="tech-info">
+                <h4>305-мм орудия в барбетах</h4>
+                <p>Главный калибр • Урон: 90 • Вес: 1200 т</p>
+            </div>
+            <button class="btn-research" id="btn-gun_305" onclick="buyTech('gun_305')">Изучить</button>
+        </div>
 
-    <label>Двигатель (Лимит тяги):</label>
-    <select id="engine" onchange="calculateWeight()">
-        <option value="10">Ранний ДВС (Лимит: 10 т)</option>
-        <option value="15">Дизель В-2 (Лимит: 15 т)</option>
-    </select>
+        <div class="tech-card">
+            <div class="tech-info">
+                <h4>Бортовой 152-мм спонсон</h4>
+                <p>Вспом. калибр • Урон: 25 • Вес: 250 т</p>
+            </div>
+            <button class="btn-research" id="btn-sec_152" onclick="buyTech('sec_152')">Изучить</button>
+        </div>
+        
+        <div class="tech-card">
+            <div class="tech-info">
+                <h4>Гарвеевская броня 300-мм</h4>
+                <p>Защита: 110 • Вес: 1500 т</p>
+            </div>
+            <button class="btn-research locked" id="btn-armor_harvey" disabled>🔒 Нужна старая броня</button>
+        </div>
+    </div>
 
-    <div id="weight-status" class="status success">Вес: 5.5 т / 10 т (В норме)</div>
-    
-    <button id="send-btn" onclick="sendData()">Отправить в Генштаб</button>
+    <!-- ВКЛАДКА 2: КОНСТРУКТОР -->
+    <div id="constructor-tab" class="tab-content">
+        <h3>Проектирование Корабля</h3>
+        
+        <label>Название корабля:</label>
+        <input type="text" id="ship-name" placeholder="Например: Броненосец «Петропавловск»">
+
+        <label>Тип корпуса (Водоизмещение):</label>
+        <select id="hull" onchange="calculateNavalWeight()">
+            <option value="2500">Броненосный корвет (Лимит: 2500 т)</option>
+            <option value="9000">Эскадренный Броненосец (Лимит: 9000 т)</option>
+        </select>
+
+        <label>Главный калибр:</label>
+        <select id="main-gun" onchange="calculateNavalWeight()">
+            <option value="400" id="opt-gun_229">229-мм пушка в казематах (400 т) [Базовое]</option>
+            <!-- Этот пункт заблокирован, пока не изучен на 1-й вкладке -->
+            <option value="1200" id="opt-gun_305" disabled>❌ [НЕ ИЗУЧЕНО] 305-мм орудия (1200 т)</option>
+        </select>
+
+        <label>Вспомогательный противоминный калибр:</label>
+        <select id="sec-gun" onchange="calculateNavalWeight()">
+            <option value="50" id="opt-sec_47">47-мм Гочкиса (50 т) [Базовое]</option>
+            <option value="250" id="opt-sec_152" disabled>❌ [НЕ ИЗУЧЕНО] 152-мм батарея (2500 т)</option>
+        </select>
+
+        <label>Бронирование пояса:</label>
+        <select id="armor" onchange="calculateNavalWeight()">
+            <option value="600">Компаунд-броня 200-мм (600 т)</option>
+            <option value="1500" id="opt-armor_harvey" disabled>❌ [НЕ ИЗУЧЕНО] Гарвеевская сталь (1500 т)</option>
+        </select>
+
+        <label>Паровая машина:</label>
+        <select id="engine" onchange="calculateNavalWeight()">
+            <option value="300">Машина двойного расширения (300 т)</option>
+        </select>
+
+        <div id="weight-status" class="status success">Водоизмещение в норме</div>
+        
+        <button class="btn-main" id="send-ship-btn" onclick="sendShipData()">Спустить корабль на воду</button>
+    </div>
 
     <script src="script.js"></script>
 </body>
