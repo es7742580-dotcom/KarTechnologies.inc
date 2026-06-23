@@ -19,6 +19,19 @@ const db = {
         partImg: "ТУТ_ССЫЛКА_НА_ПРОЗРАЧНЫЙ_КОРПУС_КАНОНЕРКИ.png", 
         unlocked: false 
     },
+"уникальный_id": { 
+    id: "hull_2", 
+    name: "Паровой фрегат", 
+    branch: "hulls", // hulls, guns, sec или armor
+    type: "hull",   // hull, main, sec или armor (для конструктора)
+    parentId: "hull_1", // узел, после которого идет этот
+    cost: 150,          // стоимость в очках
+    desc: "Переходная ступень: дерево, обшитое медью, плюс паруса.", 
+    stats: "Характеристики:\nУрон: +50\nВес: 100 т", // \n — это перенос строки
+    img: "https://ru.wikipedia.org/wiki/%D0%A4%D0%B0%D0%B9%D0%BB:Oleg_fregate_1864.jpg#/media/%D0%A4%D0%B0%D0%B9%D0%BB:Oleg_fregate_1864.jpg", 
+    unlocked: false     // всегда false для новых технологий
+},
+
     
     // ВЕТКА: ГЛ. КАЛИБР
     "gun_1": { 
