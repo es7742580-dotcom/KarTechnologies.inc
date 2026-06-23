@@ -1,7 +1,7 @@
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 if (tg) tg.expand();
 
-// 1. БАЗА ДАННЫХ (Полная и исправленная)
+// 1. БАЗА ДАННЫХ
 const db = {
     "root_steam": { 
         id: "root_steam", name: "Паровой флот", branch: "root", type: "base", parentId: null, cost: 0, 
@@ -15,8 +15,8 @@ const db = {
     "hull_1": { 
         id: "hull_1", name: "Канонерская лодка", branch: "hulls", type: "hull", parentId: "root_steam", cost: 100,
         desc: "Малый корабль для береговой обороны.", stats: "Лимит веса: 800 т", 
-        img: "https://war-book.ru/wp-content/uploads/2019/05/00036166.jpg", 
-        partImg: "https://via.placeholder.com/800x400/000000/000000?text=", // Заглушка (прозрачный)
+        img: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Khrabryy1895.jpg", 
+        partImg: "https://via.placeholder.com/800x400/000000/000000?text=", 
         unlocked: false 
     },
     "hull_2": { 
@@ -58,7 +58,6 @@ const db = {
 
 let currentSelectedTechId = null;
 
-// Переключение вкладок
 function switchTab(tabName) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -73,7 +72,6 @@ function switchTab(tabName) {
     }
 }
 
-// Отрисовка Древа
 function renderTree() {
     const rootEl = document.getElementById('tree-root');
     if (!rootEl) return;
@@ -112,7 +110,6 @@ function renderTree() {
     });
 }
 
-// Открытие Модального окна
 function openModal(id) {
     const tech = db[id];
     currentSelectedTechId = id;
@@ -146,7 +143,6 @@ function closeModal() {
     document.getElementById('tech-modal').style.display = 'none';
 }
 
-// Покупка технологии
 function buyCurrentTech() {
     if (!currentSelectedTechId) return;
     db[currentSelectedTechId].unlocked = true;
@@ -155,7 +151,6 @@ function buyCurrentTech() {
     if(tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
 }
 
-// Обновление Конструктора
 function updateConstructorDropdowns() {
     const selects = { 'hull': 'cb-hull', 'main': 'cb-main', 'sec': 'cb-sec', 'armor': 'cb-armor' };
     Object.values(selects).forEach(id => {
@@ -174,7 +169,7 @@ function updateConstructorDropdowns() {
     });
 }
 
-// Обновление Чертежа при выборе модулей
+// ИСПРАВЛЕНО: Теперь тут стоят правильные косые кавычки ` `
 function updateBlueprint() {
     const parts = {
         'hull': document.getElementById('cb-hull').value,
@@ -197,5 +192,4 @@ function updateBlueprint() {
     }
 }
 
-// Точка входа: инициализация древа
 renderTree();
