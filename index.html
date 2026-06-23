@@ -3,111 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Морское Адмиралтейство ВПИ</title>
+    <title>Адмиралтейство: Древо Науки</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background: #1c1c1e; color: white; padding: 15px; margin: 0; }
+        body { font-family: Arial, sans-serif; background: #1c1c1e; color: white; margin: 0; padding: 15px; overflow-x: hidden; }
         .nav-tabs { display: flex; justify-content: space-around; margin-bottom: 20px; background: #2c2c2e; border-radius: 10px; padding: 5px; }
-        .tab-btn { background: none; border: none; color: #8e8e93; padding: 10px 20px; font-weight: bold; cursor: pointer; width: 50%; border-radius: 8px; }
+        .tab-btn { background: none; border: none; color: #8e8e93; padding: 10px; font-weight: bold; cursor: pointer; width: 50%; border-radius: 8px; }
         .tab-btn.active { background: #007aff; color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* Стили конструктора */
-        label { display: block; margin-top: 12px; color: #aeaea3; font-size: 14px; }
-        select, input, button { width: 100%; padding: 12px; margin: 6px 0 12px 0; border-radius: 8px; border: none; box-sizing: border-box; }
-        select { background: #2c2c2e; color: white; }
-        input { background: #2c2c2e; color: white; }
-        .btn-main { background: #007aff; color: white; font-weight: bold; cursor: pointer; font-size: 16px; }
-        .status { padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: 10px; }
-        .success { background: #248a3d; } .error { background: #b02a2a; }
+        /* Древо исследований */
+        .tree-container { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .root-node { margin-bottom: 30px; }
+        .branches-container { display: flex; justify-content: space-between; width: 100%; overflow-x: auto; gap: 15px; padding-bottom: 20px; }
+        .branch { display: flex; flex-direction: column; gap: 20px; min-width: 120px; text-align: center; }
+        .branch-title { font-size: 12px; color: #8e8e93; text-transform: uppercase; margin-bottom: 10px; }
+        
+        /* Кнопки технологий */
+        .tech-node { background: #2c2c2e; padding: 15px 5px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; font-size: 13px; font-weight: bold; }
+        .tech-node.locked { opacity: 0.5; filter: grayscale(1); border-color: #48484a; }
+        .tech-node.available { border-color: #ff9f0a; box-shadow: 0 0 10px rgba(255, 159, 10, 0.3); } /* Желтый - можно изучить */
+        .tech-node.unlocked { border-color: #34c759; background: rgba(52, 199, 89, 0.1); } /* Зеленый - изучено */
 
-        /* Стили исследований */
-        .tech-card { background: #2c2c2e; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .tech-info h4 { margin: 0 0 5px 0; }
-        .tech-info p { margin: 0; font-size: 12px; color: #8e8e93; }
-        .btn-research { background: #34c759; color: white; width: auto; padding: 8px 15px; margin: 0; font-size: 14px; border-radius: 6px; }
-        .btn-research.locked { background: #48484a; color: #8e8e93; cursor: not-allowed; }
-        .btn-research.opened { background: rgba(52, 199, 89, 0.2); color: #34c759; cursor: default; }
+        /* Модальное окно (всплывающее) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
+        .modal-content { background: #2c2c2e; width: 90%; max-width: 350px; border-radius: 15px; padding: 20px; box-sizing: border-box; position: relative; text-align: center; }
+        .modal-img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; background: #1c1c1e; }
+        .modal-close { position: absolute; top: 10px; right: 15px; font-size: 24px; color: #8e8e93; cursor: pointer; background: none; border: none; }
+        .modal-title { margin: 0 0 10px 0; font-size: 18px; color: #fff; }
+        .modal-desc { font-size: 13px; color: #aeaea3; margin-bottom: 15px; text-align: left; }
+        .modal-stats { background: #1c1c1e; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 15px; text-align: left; }
+        .btn-buy { background: #007aff; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .btn-buy:disabled { background: #48484a; color: #8e8e93; cursor: not-allowed; }
+        
+        /* Конструктор */
+        label { display: block; margin-top: 12px; color: #aeaea3; font-size: 14px; }
+        select, input { width: 100%; padding: 12px; margin: 6px 0; border-radius: 8px; border: none; box-sizing: border-box; background: #2c2c2e; color: white; }
     </style>
 </head>
 <body>
 
-    <!-- Навигация по вкладкам -->
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('research')">🔬 Исследования</button>
-        <button class="tab-btn" onclick="switchTab('constructor')">⚓ Конструктор КБ</button>
+        <button class="tab-btn active" onclick="switchTab('research')">🔬 Древо Науки</button>
+        <button class="tab-btn" onclick="switchTab('constructor')">⚓ Верфь</button>
     </div>
 
-    <!-- ВКЛАДКА 1: ИССЛЕДОВАНИЯ -->
     <div id="research-tab" class="tab-content active">
-        <h3>Викторианская эпоха (Наука)</h3>
-        
-        <div class="tech-card">
-            <div class="tech-info">
-                <h4>305-мм орудия в барбетах</h4>
-                <p>Главный калибр • Урон: 90 • Вес: 1200 т</p>
+        <div class="tree-container">
+            <div class="root-node" id="tree-root"></div>
+            <div class="branches-container" id="tree-branches">
+                <div class="branch" id="branch-hulls"><div class="branch-title">Корпуса</div></div>
+                <div class="branch" id="branch-guns"><div class="branch-title">Гл. Калибр</div></div>
+                <div class="branch" id="branch-sec"><div class="branch-title">Вспом. Орудия</div></div>
+                <div class="branch" id="branch-armor"><div class="branch-title">Броня & ДВС</div></div>
             </div>
-            <button class="btn-research" id="btn-gun_305" onclick="buyTech('gun_305')">Изучить</button>
-        </div>
-
-        <div class="tech-card">
-            <div class="tech-info">
-                <h4>Бортовой 152-мм спонсон</h4>
-                <p>Вспом. калибр • Урон: 25 • Вес: 250 т</p>
-            </div>
-            <button class="btn-research" id="btn-sec_152" onclick="buyTech('sec_152')">Изучить</button>
-        </div>
-        
-        <div class="tech-card">
-            <div class="tech-info">
-                <h4>Гарвеевская броня 300-мм</h4>
-                <p>Защита: 110 • Вес: 1500 т</p>
-            </div>
-            <button class="btn-research locked" id="btn-armor_harvey" disabled>🔒 Нужна старая броня</button>
         </div>
     </div>
 
-    <!-- ВКЛАДКА 2: КОНСТРУКТОР -->
     <div id="constructor-tab" class="tab-content">
-        <h3>Проектирование Корабля</h3>
-        
-        <label>Название корабля:</label>
-        <input type="text" id="ship-name" placeholder="Например: Броненосец «Петропавловск»">
+        <h3>Сборка корабля</h3>
+        <label>Корпус:</label><select id="cb-hull"><option value="0">Выберите корпус...</option></select>
+        <label>Главный калибр:</label><select id="cb-main"><option value="0">Выберите ГК...</option></select>
+        <label>Вспомогательный калибр:</label><select id="cb-sec"><option value="0">Выберите ПМК...</option></select>
+        <label>Броня & ДВС:</label><select id="cb-armor"><option value="0">Выберите оснащение...</option></select>
+        <button class="btn-buy" style="margin-top: 20px;">Отправить чертеж</button>
+    </div>
 
-        <label>Тип корпуса (Водоизмещение):</label>
-        <select id="hull" onchange="calculateNavalWeight()">
-            <option value="2500">Броненосный корвет (Лимит: 2500 т)</option>
-            <option value="9000">Эскадренный Броненосец (Лимит: 9000 т)</option>
-        </select>
-
-        <label>Главный калибр:</label>
-        <select id="main-gun" onchange="calculateNavalWeight()">
-            <option value="400" id="opt-gun_229">229-мм пушка в казематах (400 т) [Базовое]</option>
-            <!-- Этот пункт заблокирован, пока не изучен на 1-й вкладке -->
-            <option value="1200" id="opt-gun_305" disabled>❌ [НЕ ИЗУЧЕНО] 305-мм орудия (1200 т)</option>
-        </select>
-
-        <label>Вспомогательный противоминный калибр:</label>
-        <select id="sec-gun" onchange="calculateNavalWeight()">
-            <option value="50" id="opt-sec_47">47-мм Гочкиса (50 т) [Базовое]</option>
-            <option value="250" id="opt-sec_152" disabled>❌ [НЕ ИЗУЧЕНО] 152-мм батарея (2500 т)</option>
-        </select>
-
-        <label>Бронирование пояса:</label>
-        <select id="armor" onchange="calculateNavalWeight()">
-            <option value="600">Компаунд-броня 200-мм (600 т)</option>
-            <option value="1500" id="opt-armor_harvey" disabled>❌ [НЕ ИЗУЧЕНО] Гарвеевская сталь (1500 т)</option>
-        </select>
-
-        <label>Паровая машина:</label>
-        <select id="engine" onchange="calculateNavalWeight()">
-            <option value="300">Машина двойного расширения (300 т)</option>
-        </select>
-
-        <div id="weight-status" class="status success">Водоизмещение в норме</div>
-        
-        <button class="btn-main" id="send-ship-btn" onclick="sendShipData()">Спустить корабль на воду</button>
+    <div class="modal-overlay" id="tech-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <img src="" class="modal-img" id="m-img" alt="Tech">
+            <h2 class="modal-title" id="m-title">Название</h2>
+            <div class="modal-desc" id="m-desc">Описание технологии...</div>
+            <div class="modal-stats" id="m-stats">Урон: 10<br>Вес: 5т</div>
+            <button class="btn-buy" id="m-buy-btn" onclick="buyCurrentTech()">Изучить (100 Очков)</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
