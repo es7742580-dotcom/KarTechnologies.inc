@@ -6,7 +6,7 @@ const db = {
     "root_steam": { 
         id: "root_steam", name: "Паровой флот", branch: "root", type: "base", parentId: null, cost: 0, 
         desc: "Фундамент военного флота.", stats: "Открывает доступ к веткам.", 
-        img: "https://upload.wikimedia.org/wikipedia/commons/1/1a/HMS_Warrior_1860_Portsmouth.jpg", 
+        img: "", 
         partImg: null, // У корня нет детали
         unlocked: true 
     },
