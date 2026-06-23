@@ -3,44 +3,33 @@ tg.expand();
 
 // 1. БАЗА ДАННЫХ ТЕХНОЛОГИЙ (Тут ты сможешь добавлять свои 15 штук в каждую ветку!)
 const db = {
-    "root_steam": { 
-        id: "root_steam", name: "Паровой флот", branch: "root", type: "base", parentId: null, cost: 0, 
-        desc: "Фундамент военного флота.", stats: "Открывает доступ к веткам.", 
-        img: "https://upload.wikimedia.org/wikipedia/commons/1/1a/HMS_Warrior_1860_Portsmouth.jpg", 
-        unlocked: true 
-    },
+    // КОРЕНЬ (Основа всего)
+    "root_steam": { id: "root_steam", name: "Паровой флот", branch: "root", type: "base", parentId: null, cost: 0, 
+        desc: "Фундамент военного флота. Позволяет строить паровые корабли.", stats: "Открывает доступ к веткам.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/HMS_Warrior_1860_Portsmouth.jpg/800px-HMS_Warrior_1860_Portsmouth.jpg", unlocked: true },
     
-    // ВЕТКА: КОРПУСА (Прямая рабочая ссылка)
-    "hull_1": { 
-        id: "hull_1", name: "Канонерская лодка", branch: "hulls", type: "hull", parentId: "root_steam", cost: 100,
-        desc: "Малый корабль для береговой обороны.", stats: "Лимит веса: 800 т", 
-        img: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Khrabryy1895.jpg", 
-        unlocked: false 
-    },
-    
-    // ВЕТКА: ГЛ. КАЛИБР
-    "gun_1": { 
-        id: "gun_1", name: "152-мм Гладкоствол", branch: "guns", type: "main", parentId: "root_steam", cost: 100,
-        desc: "Старая дульнозарядная пушка.", stats: "Урон: 15 / Вес: 50 т", 
-        img: "https://upload.wikimedia.org/wikipedia/commons/1/17/6in_BL_gun_on_ship.jpg", 
-        unlocked: false 
-    },
+    // ВЕТКА 1: КОРПУСА
+    "hull_1": { id: "hull_1", name: "Канонерская лодка", branch: "hulls", type: "hull", parentId: "root_steam", cost: 100,
+        desc: "Малый корабль для береговой обороны. Дешевый, но слабый.", stats: "Лимит веса: 800 т", img: "https://via.placeholder.com/300x150/1c1c1e/fff?text=Gunboat", unlocked: false },
+    "hull_2": { id: "hull_2", name: "Корвет", branch: "hulls", type: "hull", parentId: "hull_1", cost: 250,
+        desc: "Быстрый океанский корабль. Идеален для разведки.", stats: "Лимит веса: 2500 т", img: "https://via.placeholder.com/300x150/1c1c1e/fff?text=Corvette", unlocked: false },
 
-    // ВЕТКА: ВСПОМ. ОРУДИЯ
-    "sec_1": { 
-        id: "sec_1", name: "Картечница Гатлинга", branch: "sec", type: "sec", parentId: "root_steam", cost: 50,
-        desc: "Многоствольный пулемет.", stats: "Урон: 5 / Вес: 2 т", 
-        img: "https://upload.wikimedia.org/wikipedia/commons/c/c2/Gatling_gun_1865.jpg", 
-        unlocked: false 
-    },
+    // ВЕТКА 2: ГЛАВНЫЙ КАЛИБР
+    "gun_1": { id: "gun_1", name: "152-мм Гладкоствол", branch: "guns", type: "main", parentId: "root_steam", cost: 100,
+        desc: "Старая дульнозарядная пушка. Стреляет ядрами.", stats: "Урон: 15\nВес: 50 т", img: "https://via.placeholder.com/300x150/1c1c1e/fff?text=152mm+Gun", unlocked: false },
+    "gun_2": { id: "gun_2", name: "203-мм Нарезная", branch: "guns", type: "main", parentId: "gun_1", cost: 300,
+        desc: "Казнозарядное орудие. Пробивает раннюю броню.", stats: "Урон: 40\nВес: 180 т", img: "https://via.placeholder.com/300x150/1c1c1e/fff?text=203mm+Gun", unlocked: false },
 
-    // ВЕТКА: БРОНЯ
-    "arm_1": { 
-        id: "arm_1", name: "Железная броня", branch: "armor", type: "armor", parentId: "root_steam", cost: 150,
-        desc: "Толстые листы кованого железа.", stats: "Защита: 20 / Вес: 300 т", 
-        img: "https://upload.wikimedia.org/wikipedia/commons/4/4c/Ironclad_armor_sample.jpg", 
-        unlocked: false 
-    }
+    // ВЕТКА 3: ВСПОМОГАТЕЛЬНЫЕ
+    "sec_1": { id: "sec_1", name: "Картечница", branch: "sec", type: "sec", parentId: "root_steam", cost: 50,
+        desc: "Многоствольный пулемет Гатлинга против шлюпок.", stats: "Урон: 5\nВес: 2 т", img: "https://via.placeholder.com/300x150/1c1c1e/fff?text=Gatling", unlocked: false },
+    "sec_2": { id: "sec_2", name: "47-мм Гочкиса", branch: "sec", type: "sec", parentId: "sec_1", cost: 150,
+        desc: "Скорострельная пушка. Защита от торпедных катеров.", stats: "Урон: 12\nВес: 15 т", img: "https://via.placeholder.com/300x150/1c1c1e/fff?text=47mm+Hotchkiss", unlocked: false },
+
+    // ВЕТКА 4: БРОНЯ И ДВС
+    "arm_1": { id: "arm_1", name: "Железная броня", branch: "armor", type: "armor", parentId: "root_steam", cost: 150,
+        desc: "Толстые листы кованого железа.", stats: "Защита: 20\nВес: 300 т", img: "https://via.placeholder.com/300x150/1c1c1e/fff?text=Iron+Armor", unlocked: false },
+    "arm_2": { id: "arm_2", name: "Стальная броня", branch: "armor", type: "armor", parentId: "arm_1", cost: 400,
+        desc: "Сплав стали. Легче и прочнее железа.", stats: "Защита: 45\nВес: 250 т", img: "https://via.placeholder.com/300x150/1c1c1e/fff?text=Steel+Armor", unlocked: false },
 };
 
 let currentSelectedTechId = null;
